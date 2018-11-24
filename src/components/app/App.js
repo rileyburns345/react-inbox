@@ -69,10 +69,23 @@ class App extends Component {
     }
   }
 
+  onStarClick = (id) => {
+    this.setState({
+      ...this.state,
+      messages: this.state.messages.map(message => {
+        if (message.id === id) {
+          message.starred = !message.starred
+        }
+        return message
+      })
+    })
+  }
+
+
   render() {
     return (
       <div className="App">
-        <MessageList messages={this.state.messages}/>
+        <MessageList messages={this.state.messages} onStarClick={this.onStarClick}/>
       </div>
     );
   }

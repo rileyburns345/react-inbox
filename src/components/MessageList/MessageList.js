@@ -1,9 +1,9 @@
 import React from 'react'
 import Message from '../Message/Message'
 
-const MessageList = ({ messages }) => (
+const MessageList = ({ messages, onStarClick }) => (
   messages.map((message, idx) => {
-    return <Message key={idx} message={message}/>
+    return <Message key={idx} onStarClick={onStarClick} message={message}/>
   })
 )
 

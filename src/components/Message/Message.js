@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Message = ({ message }) => (
+const Message = ({ message, onStarClick }) => (
 
 <div className={`row message ${message.read ? 'read' : 'unread'} ${message.selected ? 'selected' : ''}`}>
   <div className="col-xs-1">
@@ -9,7 +9,7 @@ const Message = ({ message }) => (
         <input type="checkbox" />
       </div>
       <div className="col-xs-2">
-        <i className={`${message.starred ? 'star fa fa-star' : 'star fa fa-star-o'}`}></i>
+        <i onClick={function() {onStarClick(message.id)}} className={`${message.starred ? 'star fa fa-star' : 'star fa fa-star-o'}`}></i>
       </div>
     </div>
   </div>
