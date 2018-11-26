@@ -46,21 +46,21 @@ class Toolbar extends Component {
             Mark As Unread
           </button>
 
-          <select id="mySelect" onChange={() => {this.valueGetter()}} className="form-control label-select">
+          <select id="mySelect" onChange={() => {this.valueGetter()}} className="form-control label-select" disabled={!selected ? 'disabled' : false}>
             <option>Apply label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <select id="mySelect2" onChange={() => {this.valueGetter2()}} className="form-control label-select">
+          <select id="mySelect2" onChange={() => {this.valueGetter2()}} className="form-control label-select" disabled={!selected ? 'disabled' : false}>
             <option>Remove label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <button onClick={function() {deleteMessage()}} className="btn btn-default">
+          <button onClick={function() {deleteMessage()}} className="btn btn-default" disabled={!selected ? 'disabled' : false}>
             <i className="fa fa-trash-o"></i>
           </button>
 
