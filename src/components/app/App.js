@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import MessageList from '../MessageList/MessageList'
 import Toolbar from '../Toolbar/Toolbar'
+import ComposeForm from '../ComposeForm/ComposeForm'
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      messages: []
+      messages: [],
+      compose: false
     }
   }
 
@@ -19,8 +21,6 @@ class App extends Component {
       messages: json
     })
   }
-
-
 
   onStarClick = async (id) => {
 
@@ -45,6 +45,7 @@ class App extends Component {
   }
 
   onBoxCheck = (id) => {
+
     this.setState({
       ...this.state,
       messages: this.state.messages.map(message => {
@@ -78,79 +79,188 @@ class App extends Component {
     }
   }
 
-  markAsRead = () => {
+  markAsRead = async () => {
+
+    const ids = this.state.messages.filter(message => {
+      return message.selected === true
+    }).map(message => {
+      return message.id
+    })
+
+    const response = await fetch(`http://localhost:8082/api/messages`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      body: JSON.stringify({
+        messageIds: ids,
+        command: 'read',
+        read: true
+      })
+    })
+
+    const newList = await response.json()
+
+    this.setState({
+      ...this.state,
+      messages: newList
+    })
+  }
+
+  markAsUnread = async () => {
+
+    const ids = this.state.messages.filter(message => {
+      return message.selected === true
+    }).map(message => {
+      return message.id
+    })
+
+    const response = await fetch(`http://localhost:8082/api/messages`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      body: JSON.stringify({
+        messageIds: ids,
+        command: 'read',
+        read: false
+      })
+    })
+
+    const newList = await response.json()
+
+    this.setState({
+      ...this.state,
+      messages: newList
+    })
+  }
+
+  deleteMessage = async () => {
+
+    const ids = this.state.messages.filter(message => {
+      return message.selected === true
+    }).map(message => {
+      return message.id
+    })
+
+    const response = await fetch(`http://localhost:8082/api/messages`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      body: JSON.stringify({
+        messageIds: ids,
+        command: 'delete'
+      })
+    })
+
+    const newList = await response.json()
+
+    this.setState({
+      ...this.state,
+      messages: newList
+    })
+  }
+
+addLabel = async(label) => {
+
+  const ids = this.state.messages.filter(message => {
+    return message.selected === true
+  }).map(message => {
+    return message.id
+  })
+
+  const response = await fetch(`http://localhost:8082/api/messages`, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json; charset=utf-8'},
+    body: JSON.stringify({
+      messageIds: ids,
+      command: 'addLabel',
+      label: label
+
+    })
+  })
+
+  /// STOP HERE
+
     this.setState({
       ...this.state,
       messages: this.state.messages.map(message => {
-        if (message.selected === true) {
-          message.read = true
-        }
-        return message
-      })
+         if (message.selected === true) {
+           if (label === 'Apply label') {
+             return message
+           }
+           else if (!message.labels.includes(label)) {
+             message.labels.push(label)
+              return message
+           }
+         }
+       return message
+       })
     })
   }
 
-  markAsUnread = () => {
-    this.setState({
-      ...this.state,
-      messages: this.state.messages.map(message => {
-        if (message.selected === true) {
-          message.read = false
-        }
-        return message
+  addLabel2 = async (label2) => {
+
+      const ids = this.state.messages.filter(message => {
+        return message.selected === true
+      }).map(message => {
+        return message.id
       })
-    })
-  }
 
-  deleteMessage = () => {
-    this.setState({
-      ...this.state,
-      messages: this.state.messages.filter(message => {
-        if (!message.selected === true) {
-          return message
-        }
+      const response = await fetch(`http://localhost:8082/api/messages`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
+        body: JSON.stringify({
+          messageIds: ids,
+          command: 'removeLabel',
+          label: label2
+
+        })
       })
-    })
-  }
 
-addLabel = (label) => {
-  let newMessages = this.state.messages.map(message => {
-      if (message.selected === true) {
-        if (!message.labels.includes(label)) {
-          let newMessage = {...message}
-          newMessage.labels = [...message.labels, label]
-          return newMessage
-        }
-      }
-    return message
-    })
-    this.setState({
-      ...this.state,
-      messages: newMessages
-    })
-  }
 
-  addLabel2 = (label2) => {
-    let newMessages = this.state.messages.map(message => {
-        if (message.selected === true) {
-          if (message.labels.includes(label2)) {
-            let newMessage = {...message}
 
-            console.log(newMessage.lables)
 
-            let i = newMessage.labels.indexOf(label2)
-            newMessage.labels.splice(i,i+1)
 
-            return newMessage
-          }
-        }
-      return message
-      })
       this.setState({
         ...this.state,
-        messages: newMessages
+        messages: this.state.messages.map(message => {
+              if (message.selected === true) {
+                if (message.labels.includes(label2)) {
+                  let i = message.labels.indexOf(label2)
+                  message.labels.splice(i,i+1)
+                  return message
+                }
+              }
+            return message
+            })
       })
     }
+
+  onComposeClick = () => {
+    this.setState({
+      ...this.state,
+      compose: !this.state.compose
+    })
+  }
+
+  onSendForm = async (sub, bod) => {
+    console.log(this.state.messages);
+    const response = await fetch(`http://localhost:8082/api/messages`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      body: JSON.stringify({
+        subject: sub,
+        body: bod,
+        read: false,
+        starred: false
+      })
+    })
+
+    const newItem = await response.json()
+
+    this.setState({
+      ...this.state,
+      compose: !this.state.compose,
+      messages: [...this.state.messages, newItem]
+    })
+
+  }
 
 
 
@@ -165,7 +275,9 @@ addLabel = (label) => {
             deleteMessage={this.deleteMessage}
             addLabel={this.addLabel}
             addLabel2={this.addLabel2}
+            onComposeClick={this.onComposeClick}
             />
+        <ComposeForm onComposeClick={this.onComposeClick} composing={this.state.compose} onSendForm={this.onSendForm}/>
         <MessageList messages={this.state.messages} onStarClick={this.onStarClick} onBoxCheck={this.onBoxCheck}/>
       </div>
     );

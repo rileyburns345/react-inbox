@@ -22,7 +22,7 @@ class Toolbar extends Component {
 
 
     render() {
-      const { messages, selectAll, selected, unselected, markAsRead, markAsUnread, deleteMessage } = this.props
+      const { messages, selectAll, selected, unselected, markAsRead, markAsUnread, deleteMessage, onComposeClick } = this.props
       return (
       <div className="row toolbar">
         <div className="col-md-12">
@@ -32,6 +32,10 @@ class Toolbar extends Component {
               return !message.read
             }).length} </span>
               unread messages </p>
+
+          <a className="btn btn-danger" onClick={function () {onComposeClick()}}>
+            <i className="fa fa-plus"></i>
+          </a>
 
           <button onClick={function() {selectAll()}} className="btn btn-default">
             <i className={!selected ? 'fa fa-square-o'
