@@ -4,6 +4,8 @@ import MessageList from '../MessageList/MessageList'
 import Toolbar from '../Toolbar/Toolbar'
 import ComposeForm from '../ComposeForm/ComposeForm'
 
+const API = 'gschool-api.herokuapp.com/api/messages'
+
 class App extends Component {
   constructor() {
     super()
@@ -14,7 +16,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('http://localhost:8082/api/messages')
+    const response = await fetch(`${API}`)
     const json = await response.json()
     this.setState({
       ...this.state,
@@ -24,7 +26,7 @@ class App extends Component {
 
   onStarClick = async (id) => {
 
-    const response = await fetch(`http://localhost:8082/api/messages`, {
+    const response = await fetch(`${API}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
       body: JSON.stringify({
@@ -87,7 +89,7 @@ class App extends Component {
       return message.id
     })
 
-    const response = await fetch(`http://localhost:8082/api/messages`, {
+    const response = await fetch(`${API}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
       body: JSON.stringify({
@@ -113,7 +115,7 @@ class App extends Component {
       return message.id
     })
 
-    const response = await fetch(`http://localhost:8082/api/messages`, {
+    const response = await fetch(`${API}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
       body: JSON.stringify({
@@ -139,7 +141,7 @@ class App extends Component {
       return message.id
     })
 
-    const response = await fetch(`http://localhost:8082/api/messages`, {
+    const response = await fetch(`${API}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
       body: JSON.stringify({
@@ -164,7 +166,7 @@ addLabel = async(label) => {
     return message.id
   })
 
-  const response = await fetch(`http://localhost:8082/api/messages`, {
+  const response = await fetch(`${API}`, {
     method: 'PATCH',
     headers: {'Content-Type': 'application/json; charset=utf-8'},
     body: JSON.stringify({
@@ -202,7 +204,7 @@ addLabel = async(label) => {
         return message.id
       })
 
-      const response = await fetch(`http://localhost:8082/api/messages`, {
+      const response = await fetch(`${API}`, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json; charset=utf-8'},
         body: JSON.stringify({
@@ -241,7 +243,7 @@ addLabel = async(label) => {
 
   onSendForm = async (sub, bod) => {
     console.log(this.state.messages);
-    const response = await fetch(`http://localhost:8082/api/messages`, {
+    const response = await fetch(`${API}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
       body: JSON.stringify({
